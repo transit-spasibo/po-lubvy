@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'bg2', url: 'bg2.png' },
         { id: 'bg3', url: 'bg3.png' },
         { id: 'bg4', url: 'bg4.png' },
-        { id: 'bg5', url: 'bg5.png' }
+        { id: 'bg5', url: 'bg5.png' },
+        { id: 'bg5', url: 'bg6.png' }
     ];
 
     let currentBg = backgroundImages[0].url;
@@ -122,3 +123,4 @@ document.addEventListener('DOMContentLoaded', () => {
     initBackgrounds();
     startHeartStorm();
 });
+
