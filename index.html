@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Работа - это 💙 | Выразите признательность коллегам в этот особенный день</title>
+    <title>Работа - это 💙 | Создайте ТРАНЗИТинку</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- Подключаем библиотеку через надежный CDN -->
+    <!-- Библиотека для генерации изображения -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
@@ -33,17 +33,16 @@
             <div class="preview-area">
                 <div id="mainPreview" class="preview-content">
                     <div class="glass-plate">
-                        <div class="plate-icon">💙</div>
+                        <!-- Эмодзи и подпись вынесены за пределы текстовых блоков для четкого позиционирования -->
                         <div class="preview-to" id="p-to">Коллега</div>
                         <div class="preview-msg" id="p-msg">«Текст вашей признательности»</div>
-                        <div class="plate-footer">РАБОТА - ЭТО 💙</div>
                     </div>
                 </div>
             </div>
 
             <div class="controls">
                 <button class="btn btn-change" id="changeBgBtn">
-                    🔄 Поменять фон (Вариант <span id="bgNum">1</span>/5)
+                    🔄 Поменять фон
                 </button>
                 <button id="dlBtn" class="btn btn-download">
                     📥 Скачать ТРАНЗИТинку
@@ -52,14 +51,12 @@
         </section>
     </div>
 
-    <!-- Скрытый блок для рендеринга -->
+    <!-- Скрытый блок для рендеринга (900x900) -->
     <div id="render-area">
         <div id="renderCard" class="render-card">
             <div class="glass-plate-render">
-                <div class="plate-icon-render">💙</div>
                 <h2 id="r-to"></h2>
                 <p id="r-msg"></p>
-                <div class="plate-footer-render">РАБОТА - ЭТО 💙</div>
             </div>
         </div>
     </div>
