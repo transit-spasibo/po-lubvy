@@ -58,19 +58,23 @@ document.addEventListener('DOMContentLoaded', () => {
         heart.className = 'floating-heart';
         heart.innerText = '💙';
         heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+        // Немного разный размер для глубины
+        heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+        // Разная длительность анимации блеска
+        heart.style.animationDuration = (8 + Math.random() * 5) + 's, ' + (1.5 + Math.random() * 2) + 's';
         
         container.appendChild(heart);
 
-        // Удаляем элемент после завершения анимации (через 10сек), чтобы не перегружать DOM
+        // Удаляем элемент после завершения анимации
         setTimeout(() => {
             heart.remove();
-        }, 10000);
+        }, 12000);
     }
 
-    // Создаем сердечки через интервал, а не все сразу
+    // Создаем сердечки чаще для эффекта "шторма"
     function startHeartStorm() {
-        setInterval(spawnHeart, 800);
+        // Одно сердце каждые 400мс
+        setInterval(spawnHeart, 400);
     }
 
     // Скачивание
@@ -96,8 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const canvas = await html2canvas(renderArea, {
                 width: 900,
                 height: 900,
-                scale: 1, // Оставляем масштаб 1 для скорости, html2canvas и так возьмет размеры контейнера
-                useCORS: true
+                scale: 1,
+                useCORS: true,
+                logging: false
             });
 
             const link = document.createElement('a');
@@ -123,5 +128,3 @@ document.addEventListener('DOMContentLoaded', () => {
     initBackgrounds();
     startHeartStorm();
 });
-
-
