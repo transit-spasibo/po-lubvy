@@ -1,40 +1,62 @@
-<!DOCTYPE html>
-<html lang="ru">
+html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Корпоративные Валентинки | Спасибо коллегам</title>
+    <title>Работа - это 💙 | Конструктор Валентинок</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Библиотека для генерации изображения -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-    <div class="stars-container"></div> <header>
-        <div class="container">
-            <h1>Work <span class="heart-icon">💙</span> Valentines</h1>
-            <p>Выразите признательность коллегам в этот особенный день</p>
-        </div>
-    </header>
 
-    <main class="container">
-        <section class="valentine-form card">
-            <h2>Создать рабочую валентинку</h2>
-            <form id="valentineForm">
-                <div class="form-group">
-                    <input type="text" id="recipient" placeholder="Кому (Имя Фамилия)" required>
+    <!-- Декоративный фон с сердечками -->
+    <div class="bg-hearts" id="bgHearts"></div>
+
+    <div class="container">
+        <header>
+            <h1>Работа - это <span>💙</span></h1>
+            <p class="subtitle">Поздравьте коллегу уникальной валентинкой</p>
+        </header>
+
+        <section class="generator-box">
+            <div class="form-group">
+                <label for="toInput">Кому:</label>
+                <input type="text" id="toInput" placeholder="Имя коллеги" maxlength="40">
+            </div>
+            <div class="form-group">
+                <label for="msgInput">За что вы признательны коллеге?</label>
+                <textarea id="msgInput" rows="3" placeholder="Ваши слова благодарности..." maxlength="250"></textarea>
+            </div>
+
+            <!-- Область предпросмотра (Конструктор) -->
+            <div class="preview-area">
+                <div id="mainPreview" class="preview-content">
+                    <div class="preview-to" id="p-to">Для: Коллеги</div>
+                    <div class="preview-msg" id="p-msg">«Текст вашего поздравления»</div>
                 </div>
-                <div class="form-group">
-                    <textarea id="message" rows="3" placeholder="За что вы хотите сказать спасибо?" required></textarea>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="sender" placeholder="От кого (необязательно)">
-                </div>
-                <button type="submit" class="btn-submit">Отправить коллеге</button>
-            </form>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-change" id="changeBgBtn">
+                    🔄 Поменять фон (Вариант <span id="bgNum">1</span>/6)
+                </button>
+                <button id="dlBtn" class="btn btn-download">
+                    📥 Скачать валентинку
+                </button>
+            </div>
         </section>
+    </div>
 
-        <section class="valentines-grid" id="valentinesGrid">
-            </section>
-    </main>
+    <!-- Скрытая зона для создания картинки высокого качества -->
+    <div id="render-area">
+        <div id="renderCard" class="render-card">
+            <div class="render-icon">💙</div>
+            <h2 id="r-to"></h2>
+            <p id="r-msg"></p>
+            <div class="render-footer">РАБОТА - ЭТО 💙</div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
