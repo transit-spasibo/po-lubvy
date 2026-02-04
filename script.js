@@ -1,6 +1,5 @@
-// Массив фонов
+// Массив фонов (теперь PNG и сразу предлагается подгруженный фон)
 const backgrounds = [
-    'linear-gradient(135deg, #1e293b, #0f172a)', 
     'url("bg1.png")',
     'url("bg2.png")',
     'url("bg3.png")',
@@ -21,8 +20,9 @@ function updateUI() {
     const to = toInput.value.trim();
     const msg = msgInput.value.trim();
 
-    document.getElementById('p-to').innerText = to ? "Для: " + to : "Для: Коллеги";
-    document.getElementById('p-msg').innerText = msg ? "«" + msg + "»" : "«Текст вашего поздравления»";
+    // Обновляем текст (убрано "Для:")
+    document.getElementById('p-to').innerText = to ? to : "Имя";
+    document.getElementById('p-msg').innerText = msg ? "«" + msg + "»" : "«Текст вашей признательности»";
 
     if (to.length > 0 && msg.length > 0) {
         dlBtn.classList.add('visible');
@@ -47,7 +47,8 @@ async function downloadImage() {
     const msg = msgInput.value.trim();
     const renderCard = document.getElementById('renderCard');
     
-    document.getElementById('r-to').innerText = "Для: " + to;
+    // Подготовка данных для рендера (без "Для:")
+    document.getElementById('r-to').innerText = to;
     document.getElementById('r-msg').innerText = "«" + msg + "»";
     renderCard.style.background = backgrounds[currentBgIndex];
 
@@ -56,7 +57,12 @@ async function downloadImage() {
 
     try {
         const canvas = await html2canvas(document.getElementById('render-area'), {
-            width: 800, height: 800, scale: 2, useCORS: true, allowTaint: true
+            width: 800, 
+            height: 800, 
+            scale: 2, 
+            useCORS: true, 
+            allowTaint: true,
+            backgroundColor: null
         });
 
         const link = document.createElement('a');
@@ -64,21 +70,23 @@ async function downloadImage() {
         link.href = canvas.toDataURL("image/png");
         link.click();
     } catch (err) {
-        console.error("Ошибка:", err);
+        console.error("Ошибка при создании изображения:", err);
     } finally {
-        dlBtn.innerText = "📥 Скачать валентинку";
+        dlBtn.innerText = "📥 Скачать ТРАНЗИТинку";
         dlBtn.disabled = false;
     }
 }
 
-// Создание сердечек (исправлено)
+// Создание сердечек
 function createHearts() {
     const container = document.getElementById('bgHearts');
+    if (!container) return;
     for (let i = 0; i < 20; i++) {
         const heart = document.createElement('div');
         heart.className = 'floating-heart';
         heart.innerText = '💙';
         heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.top = Math.random() * 100 + 'vh';
         heart.style.animationDelay = Math.random() * 10 + 's';
         heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
         container.appendChild(heart);
@@ -92,5 +100,6 @@ dlBtn.addEventListener('click', downloadImage);
 
 window.onload = () => {
     createHearts();
+    // Сразу устанавливаем первый подгруженный фон
     document.getElementById('mainPreview').style.background = backgrounds[0];
 };
