@@ -32,14 +32,18 @@
 
             <div class="preview-area">
                 <div id="mainPreview" class="preview-content">
-                    <div class="preview-to" id="p-to">Имя</div>
-                    <div class="preview-msg" id="p-msg">«Текст вашей благодарности»</div>
+                    <div class="glass-plate">
+                        <div class="plate-icon">💙</div>
+                        <div class="preview-to" id="p-to">Коллега</div>
+                        <div class="preview-msg" id="p-msg">«Текст вашего поздравления»</div>
+                        <div class="plate-footer">РАБОТА - ЭТО 💙</div>
+                    </div>
                 </div>
             </div>
 
             <div class="controls">
                 <button class="btn btn-change" id="changeBgBtn">
-                    🔄 Поменять фон (Вариант <span id="bgNum">1</span>/6)
+                    🔄 Поменять фон (Вариант <span id="bgNum">1</span>/5)
                 </button>
                 <button id="dlBtn" class="btn btn-download">
                     📥 Скачать валентинку
@@ -51,10 +55,12 @@
     <!-- Скрытый блок для рендеринга -->
     <div id="render-area">
         <div id="renderCard" class="render-card">
-            <div class="render-icon">💙</div>
-            <h2 id="r-to"></h2>
-            <p id="r-msg"></p>
-            <div class="render-footer">РАБОТА - ЭТО 💙</div>
+            <div class="glass-plate-render">
+                <div class="plate-icon-render">💙</div>
+                <h2 id="r-to"></h2>
+                <p id="r-msg"></p>
+                <div class="plate-footer-render">РАБОТА - ЭТО 💙</div>
+            </div>
         </div>
     </div>
 
