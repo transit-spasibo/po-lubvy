@@ -1,108 +1,124 @@
-// Массив фонов (PNG)
-const backgrounds = [
-    'url("bg1.png")',
-    'url("bg2.png")',
-    'url("bg3.png")',
-    'url("bg4.png")',
-    'url("bg5.png")'',
-    'url("bg6.png")
-];
+document.addEventListener('DOMContentLoaded', () => {
+    const recipientInput = document.getElementById('recipient-name');
+    const gratitudeInput = document.getElementById('gratitude-text');
+    const outputName = document.getElementById('output-name');
+    const outputText = document.getElementById('output-text');
+    const charCount = document.getElementById('char-count');
+    const bgSelection = document.getElementById('background-selection');
+    const cardOutput = document.getElementById('card-output');
+    const downloadBtn = document.getElementById('download-button');
+    const resetBtn = document.getElementById('reset-form');
 
-let currentBgIndex = 0;
+    // Названия файлов фонов
+    const backgroundImages = [
+        { id: 'bg1', url: 'bg1.png' },
+        { id: 'bg2', url: 'bg2.png' },
+        { id: 'bg3', url: 'bg3.png' },
+        { id: 'bg4', url: 'bg4.png' },
+        { id: 'bg5', url: 'bg5.png' }
+    ];
 
-const toInput = document.getElementById('toInput');
-const msgInput = document.getElementById('msgInput');
-const dlBtn = document.getElementById('dlBtn');
-const changeBgBtn = document.getElementById('changeBgBtn');
+    let currentBg = backgroundImages[0].url;
 
-// Обновление текста на странице (Превью)
-function updateUI() {
-    const to = toInput.value.trim();
-    const msg = msgInput.value.trim();
-
-    document.getElementById('p-to').innerText = to ? to : "Имя";
-    document.getElementById('p-msg').innerText = msg ? "«" + msg + "»" : "«Текст вашей признательности»";
-
-    if (to.length > 0 && msg.length > 0) {
-        dlBtn.classList.add('visible');
-    } else {
-        dlBtn.classList.remove('visible');
-    }
-}
-
-// Смена фона
-function cycleBackground() {
-    currentBgIndex = (currentBgIndex + 1) % backgrounds.length;
-    const currentBg = backgrounds[currentBgIndex];
-    const preview = document.getElementById('mainPreview');
-
-    preview.style.background = currentBg;
-    document.getElementById('bgNum').innerText = currentBgIndex + 1;
-}
-
-// Скачивание изображения
-async function downloadImage() {
-    const to = toInput.value.trim();
-    const msg = msgInput.value.trim();
-    const renderCard = document.getElementById('renderCard');
-    
-    // Подготовка данных для скрытого рендера
-    document.getElementById('r-to').innerText = to;
-    document.getElementById('r-msg').innerText = "«" + msg + "»";
-    renderCard.style.background = backgrounds[currentBgIndex];
-
-    dlBtn.innerText = "⏳ Генерирую...";
-    dlBtn.disabled = true;
-
-    try {
-        // Рендерим скрытую область 900x900
-        const canvas = await html2canvas(document.getElementById('render-area'), {
-            width: 900, 
-            height: 900, 
-            scale: 2, // Высокое качество (DPI)
-            useCORS: true, 
-            allowTaint: true,
-            backgroundColor: null
+    // Инициализация фонов
+    function initBackgrounds() {
+        backgroundImages.forEach((bg, index) => {
+            const opt = document.createElement('div');
+            opt.className = 'bg-option';
+            opt.style.backgroundImage = `url(${bg.url})`;
+            if (index === 0) opt.classList.add('selected');
+            
+            opt.addEventListener('click', () => {
+                document.querySelectorAll('.bg-option').forEach(el => el.classList.remove('selected'));
+                opt.classList.add('selected');
+                currentBg = bg.url;
+                cardOutput.style.backgroundImage = `url(${bg.url})`;
+            });
+            bgSelection.appendChild(opt);
         });
-
-        const link = document.createElement('a');
-        // Название файла начинается с TRANSITinka
-        link.download = `TRANSITinka_${to}.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-    } catch (err) {
-        console.error("Ошибка при создании изображения:", err);
-    } finally {
-        dlBtn.innerText = "📥 Скачать ТРАНЗИТинку";
-        dlBtn.disabled = false;
+        cardOutput.style.backgroundImage = `url(${currentBg})`;
     }
-}
 
-// Создание декоративных сердечек на фоне сайта
-function createHearts() {
-    const container = document.getElementById('bgHearts');
-    if (!container) return;
-    for (let i = 0; i < 20; i++) {
+    // Обновление превью
+    function updatePreview() {
+        const name = recipientInput.value.trim();
+        const msg = gratitudeInput.value.trim();
+        outputName.textContent = name || "Коллега";
+        outputText.textContent = msg ? `«${msg}»` : "«Текст вашей признательности»";
+        charCount.textContent = `${gratitudeInput.value.length}/250`;
+    }
+
+    // Оптимизированный генератор сердечек
+    function spawnHeart() {
+        const container = document.getElementById('bgHearts');
+        if (!container) return;
+        
         const heart = document.createElement('div');
         heart.className = 'floating-heart';
         heart.innerText = '💙';
         heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.top = Math.random() * 100 + 'vh';
-        heart.style.animationDelay = Math.random() * 10 + 's';
-        heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+        heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+        
         container.appendChild(heart);
+
+        // Удаляем элемент после завершения анимации (через 10сек), чтобы не перегружать DOM
+        setTimeout(() => {
+            heart.remove();
+        }, 10000);
     }
-}
 
-// Слушатели событий
-toInput.addEventListener('input', updateUI);
-msgInput.addEventListener('input', updateUI);
-changeBgBtn.addEventListener('click', cycleBackground);
-dlBtn.addEventListener('click', downloadImage);
+    // Создаем сердечки через интервал, а не все сразу
+    function startHeartStorm() {
+        setInterval(spawnHeart, 800);
+    }
 
-window.onload = () => {
-    createHearts();
-    // Сразу устанавливаем первый фон из массива
-    document.getElementById('mainPreview').style.background = backgrounds[0];
-};
+    // Скачивание
+    async function download() {
+        const to = recipientInput.value.trim() || "Коллега";
+        const msg = gratitudeInput.value.trim();
 
+        if (!msg) {
+            alert("Напишите хотя бы пару слов благодарности!");
+            return;
+        }
+
+        const renderArea = document.getElementById('render-area');
+        const renderCard = document.getElementById('renderCard');
+        document.getElementById('r-to').innerText = to;
+        document.getElementById('r-msg').innerText = `«${msg}»`;
+        renderCard.style.backgroundImage = `url(${currentBg})`;
+
+        downloadBtn.textContent = "⏳ Сохраняем...";
+        downloadBtn.disabled = true;
+
+        try {
+            const canvas = await html2canvas(renderArea, {
+                width: 900,
+                height: 900,
+                scale: 1, // Оставляем масштаб 1 для скорости, html2canvas и так возьмет размеры контейнера
+                useCORS: true
+            });
+
+            const link = document.createElement('a');
+            link.download = `TRANSITinka_${to}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        } catch (e) {
+            console.error(e);
+        } finally {
+            downloadBtn.textContent = "📥 Скачать ТРАНЗИТинку";
+            downloadBtn.disabled = false;
+        }
+    }
+
+    recipientInput.addEventListener('input', updatePreview);
+    gratitudeInput.addEventListener('input', updatePreview);
+    downloadBtn.addEventListener('click', download);
+    resetBtn.addEventListener('click', () => {
+        document.getElementById('card-form').reset();
+        updatePreview();
+    });
+
+    initBackgrounds();
+    startHeartStorm();
+});
