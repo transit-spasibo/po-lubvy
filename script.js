@@ -1,11 +1,10 @@
-// Массив фонов (теперь PNG и сразу предлагается подгруженный фон)
+// Массив фонов (PNG)
 const backgrounds = [
     'url("bg1.png")',
     'url("bg2.png")',
     'url("bg3.png")',
     'url("bg4.png")',
-    'url("bg5.png")',
-    'url("bg6.png")'
+    'url("bg5.png")'
 ];
 
 let currentBgIndex = 0;
@@ -15,13 +14,12 @@ const msgInput = document.getElementById('msgInput');
 const dlBtn = document.getElementById('dlBtn');
 const changeBgBtn = document.getElementById('changeBgBtn');
 
-// Обновление текста
+// Обновление текста на странице (Превью)
 function updateUI() {
     const to = toInput.value.trim();
     const msg = msgInput.value.trim();
 
-    // Обновляем текст (убрано "Для:")
-    document.getElementById('p-to').innerText = to ? to : "Имя";
+    document.getElementById('p-to').innerText = to ? to : "Коллега";
     document.getElementById('p-msg').innerText = msg ? "«" + msg + "»" : "«Текст вашей признательности»";
 
     if (to.length > 0 && msg.length > 0) {
@@ -41,13 +39,13 @@ function cycleBackground() {
     document.getElementById('bgNum').innerText = currentBgIndex + 1;
 }
 
-// Скачивание
+// Скачивание изображения
 async function downloadImage() {
     const to = toInput.value.trim();
     const msg = msgInput.value.trim();
     const renderCard = document.getElementById('renderCard');
     
-    // Подготовка данных для рендера (без "Для:")
+    // Подготовка данных для скрытого рендера
     document.getElementById('r-to').innerText = to;
     document.getElementById('r-msg').innerText = "«" + msg + "»";
     renderCard.style.background = backgrounds[currentBgIndex];
@@ -56,17 +54,19 @@ async function downloadImage() {
     dlBtn.disabled = true;
 
     try {
+        // Рендерим скрытую область 900x900
         const canvas = await html2canvas(document.getElementById('render-area'), {
-            width: 800, 
-            height: 800, 
-            scale: 2, 
+            width: 900, 
+            height: 900, 
+            scale: 2, // Высокое качество (DPI)
             useCORS: true, 
             allowTaint: true,
             backgroundColor: null
         });
 
         const link = document.createElement('a');
-        link.download = `Valentine_${to}.png`;
+        // Название файла начинается с TRANSITinka
+        link.download = `TRANSITinka_${to}.png`;
         link.href = canvas.toDataURL("image/png");
         link.click();
     } catch (err) {
@@ -77,7 +77,7 @@ async function downloadImage() {
     }
 }
 
-// Создание сердечек
+// Создание декоративных сердечек на фоне сайта
 function createHearts() {
     const container = document.getElementById('bgHearts');
     if (!container) return;
@@ -93,6 +93,7 @@ function createHearts() {
     }
 }
 
+// Слушатели событий
 toInput.addEventListener('input', updateUI);
 msgInput.addEventListener('input', updateUI);
 changeBgBtn.addEventListener('click', cycleBackground);
@@ -100,6 +101,6 @@ dlBtn.addEventListener('click', downloadImage);
 
 window.onload = () => {
     createHearts();
-    // Сразу устанавливаем первый подгруженный фон
+    // Сразу устанавливаем первый фон из массива
     document.getElementById('mainPreview').style.background = backgrounds[0];
 };
