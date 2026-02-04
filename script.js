@@ -4,7 +4,8 @@ const backgrounds = [
     'url("bg2.png")',
     'url("bg3.png")',
     'url("bg4.png")',
-    'url("bg5.png")'
+    'url("bg5.png")'',
+    'url("bg6.png")
 ];
 
 let currentBgIndex = 0;
@@ -19,7 +20,7 @@ function updateUI() {
     const to = toInput.value.trim();
     const msg = msgInput.value.trim();
 
-    document.getElementById('p-to').innerText = to ? to : "Коллега";
+    document.getElementById('p-to').innerText = to ? to : "Имя";
     document.getElementById('p-msg').innerText = msg ? "«" + msg + "»" : "«Текст вашей признательности»";
 
     if (to.length > 0 && msg.length > 0) {
@@ -104,3 +105,4 @@ window.onload = () => {
     // Сразу устанавливаем первый фон из массива
     document.getElementById('mainPreview').style.background = backgrounds[0];
 };
+
