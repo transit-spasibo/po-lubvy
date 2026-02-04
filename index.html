@@ -1,22 +1,23 @@
-html lang="ru">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Работа - это 💙 | Конструктор Валентинок</title>
+    <title>Работа - это 💙 | Конструктор</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- Библиотека для генерации изображения -->
+    <!-- Подключаем библиотеку через надежный CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
-    <!-- Декоративный фон с сердечками -->
+    <!-- Слой для анимированных сердечек -->
     <div class="bg-hearts" id="bgHearts"></div>
 
     <div class="container">
         <header>
             <h1>Работа - это <span>💙</span></h1>
-            <p class="subtitle">Поздравьте коллегу уникальной валентинкой</p>
+            <p class="subtitle">Создайте валентинку для коллеги</p>
         </header>
 
         <section class="generator-box">
@@ -29,7 +30,6 @@ html lang="ru">
                 <textarea id="msgInput" rows="3" placeholder="Ваши слова благодарности..." maxlength="250"></textarea>
             </div>
 
-            <!-- Область предпросмотра (Конструктор) -->
             <div class="preview-area">
                 <div id="mainPreview" class="preview-content">
                     <div class="preview-to" id="p-to">Для: Коллеги</div>
@@ -48,7 +48,7 @@ html lang="ru">
         </section>
     </div>
 
-    <!-- Скрытая зона для создания картинки высокого качества -->
+    <!-- Скрытый блок для рендеринга -->
     <div id="render-area">
         <div id="renderCard" class="render-card">
             <div class="render-icon">💙</div>
