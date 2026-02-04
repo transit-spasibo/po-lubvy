@@ -1,0 +1,104 @@
+:root {
+    --bg-dark: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --accent-blue: #38bdf8;
+    --text-main: #f1f5f9;
+    --text-dim: #94a3b8;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+header {
+    text-align: center;
+    padding: 60px 0;
+}
+
+header h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    color: var(--accent-blue);
+}
+
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* Стили формы */
+.form-group { margin-bottom: 15px; }
+
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+
+.btn-submit {
+    background: var(--accent-blue);
+    color: var(--bg-dark);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    background: #7dd3fc;
+}
+
+/* Сетка карточек */
+.valentines-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding-bottom: 50px;
+}
+
+.v-card {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(30, 41, 59, 0.8));
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid var(--accent-blue);
+    position: relative;
+    animation: fadeIn 0.5s ease;
+}
+
+.v-card h3 { color: var(--accent-blue); margin-top: 0; }
+.v-card p { font-style: italic; font-size: 0.95rem; }
+.v-card .from { display: block; margin-top: 15px; font-size: 0.8rem; color: var(--text-dim); text-align: right; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корпоративные Валентинки | Спасибо коллегам</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars-container"></div> <header>
+        <div class="container">
+            <h1>Work <span class="heart-icon">💙</span> Valentines</h1>
+            <p>Выразите признательность коллегам в этот особенный день</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="valentine-form card">
+            <h2>Создать рабочую валентинку</h2>
+            <form id="valentineForm">
+                <div class="form-group">
+                    <input type="text" id="recipient" placeholder="Кому (Имя Фамилия)" required>
+                </div>
+                <div class="form-group">
+                    <textarea id="message" rows="3" placeholder="За что вы хотите сказать спасибо?" required></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="sender" placeholder="От кого (необязательно)">
+                </div>
+                <button type="submit" class="btn-submit">Отправить коллеге</button>
+            </form>
+        </section>
+
+        <section class="valentines-grid" id="valentinesGrid">
+            </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
