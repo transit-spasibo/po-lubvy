@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadBtn = document.getElementById('download-button');
     const resetBtn = document.getElementById('reset-form');
 
-    // Названия файлов фонов
+    // Названия файлов должны точно совпадать с теми, что на GitHub (включая регистр)
     const backgroundImages = [
         { id: 'bg1', url: 'bg1.png' },
         { id: 'bg2', url: 'bg2.png' },
@@ -21,11 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentBg = backgroundImages[0].url;
 
-    // Инициализация фонов
+    // Инициализация сетки фонов
     function initBackgrounds() {
-        if (!bgSelection) return;
-        bgSelection.innerHTML = ''; // Очистка перед инициализацией
-        
         backgroundImages.forEach((bg, index) => {
             const opt = document.createElement('div');
             opt.className = 'bg-option';
@@ -43,117 +40,91 @@ document.addEventListener('DOMContentLoaded', () => {
         cardOutput.style.backgroundImage = `url(${currentBg})`;
     }
 
-    // Обновление превью
+    // Живое обновление текста (БЕЗ КАВЫЧЕК)
     function updatePreview() {
         const name = recipientInput.value.trim();
         const msg = gratitudeInput.value.trim();
         outputName.textContent = name || "Коллега";
-        outputText.textContent = msg ? `«${msg}»` : "«Текст вашей признательности»";
+        // Здесь удалены кавычки
+        outputText.textContent = msg ? msg : "Текст вашей признательности";
         charCount.textContent = `${gratitudeInput.value.length}/250`;
     }
 
-    // Оптимизированный генератор сердечек
+    // Оптимизированная анимация сердечек
     function spawnHeart() {
         const container = document.getElementById('bgHearts');
-        if (!container) return;
-        
-        // Ограничение: не создаем новые сердца, если их уже слишком много (больше 40)
-        if (container.children.length > 40) return;
+        if (!container || container.children.length > 25) return; 
 
         const heart = document.createElement('div');
         heart.className = 'floating-heart';
         heart.innerText = '💙';
-        
-        const randomLeft = Math.random() * 95; // Ограничение по ширине, чтобы не было скролла
-        heart.style.left = randomLeft + 'vw';
-        
-        const size = (Math.random() * 15 + 10);
-        heart.style.fontSize = size + 'px';
-        
-        // Индивидуальная скорость анимации
-        const duration = (7 + Math.random() * 4);
-        heart.style.animationDuration = `${duration}s, ${1.5 + Math.random()}s`;
+        heart.style.left = Math.random() * 95 + 'vw';
+        heart.style.fontSize = (Math.random() * 20 + 12) + 'px';
+        heart.style.animationDuration = (6 + Math.random() * 6) + 's';
         
         container.appendChild(heart);
-
-        // Гарантированное удаление элемента после завершения анимации
+        
         setTimeout(() => {
-            if (heart && heart.parentNode === container) {
-                container.removeChild(heart);
-            }
-        }, duration * 1000);
+            if(heart.parentElement) heart.remove();
+        }, 12000);
     }
 
-    // Создаем сердечки с умеренным интервалом
-    function startHeartStorm() {
-        // Увеличили интервал до 600мс для стабильности
-        setInterval(spawnHeart, 600);
-    }
-
-    // Скачивание
+    // Генерация изображения (БЕЗ КАВЫЧЕК)
     async function download() {
-        const to = recipientInput.value.trim() || "Коллега";
+        const name = recipientInput.value.trim() || "Коллега";
         const msg = gratitudeInput.value.trim();
+        if (!msg) return alert("Пожалуйста, напишите текст благодарности!");
 
-        if (!msg) {
-            // Используем стандартный UI вместо alert, если это критично, 
-            // но для простоты оставим логику проверки
-            return;
-        }
-
-        const renderArea = document.getElementById('render-area');
         const renderCard = document.getElementById('renderCard');
         const rTo = document.getElementById('r-to');
         const rMsg = document.getElementById('r-msg');
-
-        if (!renderArea || !renderCard) return;
-
-        rTo.innerText = to;
-        rMsg.innerText = `«${msg}»`;
+        
+        rTo.innerText = name;
+        // Здесь удалены кавычки
+        rMsg.innerText = msg;
         renderCard.style.backgroundImage = `url(${currentBg})`;
 
-        const originalBtnText = downloadBtn.textContent;
-        downloadBtn.textContent = "⏳ Сохраняем...";
+        const originalText = downloadBtn.textContent;
+        downloadBtn.textContent = "⏳ Создание...";
         downloadBtn.disabled = true;
 
         try {
-            // Оптимизация html2canvas: отключение лишних функций
-            const canvas = await html2canvas(renderArea, {
+            await new Promise(r => setTimeout(r, 100));
+
+            const canvas = await html2canvas(document.getElementById('render-area'), {
                 width: 900,
                 height: 900,
-                scale: 1,
+                scale: 2, 
                 useCORS: true,
-                logging: false,
-                backgroundColor: null,
-                removeContainer: true
+                allowTaint: true,
+                backgroundColor: null
             });
 
             const link = document.createElement('a');
-            link.download = `TRANSITinka_${to.replace(/\s+/g, '_')}.png`;
+            link.download = `TRANSITinka_${name}.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
         } catch (e) {
-            console.error("Download error:", e);
+            console.error("Ошибка при создании картинки:", e);
+            alert("Не удалось сохранить изображение. Попробуйте другой браузер.");
         } finally {
-            downloadBtn.textContent = originalBtnText;
+            downloadBtn.textContent = originalText;
             downloadBtn.disabled = false;
         }
     }
 
-    // Слушатели событий
-    if (recipientInput) recipientInput.addEventListener('input', updatePreview);
-    if (gratitudeInput) gratitudeInput.addEventListener('input', updatePreview);
-    if (downloadBtn) downloadBtn.addEventListener('click', download);
-    
-    if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
-            const form = document.getElementById('card-form');
-            if (form) form.reset();
+    // Слушатели
+    recipientInput.addEventListener('input', updatePreview);
+    gratitudeInput.addEventListener('input', updatePreview);
+    downloadBtn.addEventListener('click', download);
+    resetBtn.addEventListener('click', () => {
+        if(confirm("Очистить форму?")) {
+            document.getElementById('card-form').reset();
             updatePreview();
-        });
-    }
+        }
+    });
 
-    // Инициализация
+    // Запуск
     initBackgrounds();
-    startHeartStorm();
+    setInterval(spawnHeart, 800);
 });
