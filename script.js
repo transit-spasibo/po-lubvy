@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadBtn = document.getElementById('download-button');
     const resetBtn = document.getElementById('reset-form');
 
-    // Названия файлов должны точно совпадать с теми, что на GitHub (включая регистр)
+    // Список фонов
     const backgroundImages = [
         { id: 'bg1', url: 'bg1.png' },
         { id: 'bg2', url: 'bg2.png' },
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentBg = backgroundImages[0].url;
 
-    // Инициализация сетки фонов
+    // Инициализация фонов
     function initBackgrounds() {
         backgroundImages.forEach((bg, index) => {
             const opt = document.createElement('div');
@@ -40,80 +40,92 @@ document.addEventListener('DOMContentLoaded', () => {
         cardOutput.style.backgroundImage = `url(${currentBg})`;
     }
 
-    // Живое обновление текста (БЕЗ КАВЫЧЕК)
+    // Живое обновление текста (без кавычек)
     function updatePreview() {
         const name = recipientInput.value.trim();
         const msg = gratitudeInput.value.trim();
         outputName.textContent = name || "Имя";
-        // Здесь удалены кавычки
         outputText.textContent = msg ? msg : "Текст вашей признательности";
         charCount.textContent = `${gratitudeInput.value.length}/250`;
     }
 
-    // Оптимизированная анимация сердечек
-    function spawnHeart() {
+   // Анимация сердечек (улучшено распределение)
+    function spawnHeart(initial = false) {
         const container = document.getElementById('bgHearts');
-        if (!container || container.children.length > 25) return; 
+        if (!container || container.children.length > 30) return; 
 
         const heart = document.createElement('div');
         heart.className = 'floating-heart';
         heart.innerText = '💙';
+        
+        // Случайное положение по горизонтали
         heart.style.left = Math.random() * 95 + 'vw';
+        
+        // Если это начальная генерация, распределяем по всей высоте экрана
+        // Если обычная — пускаем снизу (стандартное поведение анимации)
+        if (initial) {
+            const startY = Math.random() * 100;
+            heart.style.top = startY + 'vh';
+            // Уменьшаем задержку для тех, что уже на экране
+            heart.style.animationDelay = `-${Math.random() * 10}s`;
+        }
+
         heart.style.fontSize = (Math.random() * 20 + 12) + 'px';
         heart.style.animationDuration = (6 + Math.random() * 6) + 's';
         
         container.appendChild(heart);
-        
-        setTimeout(() => {
-            if(heart.parentElement) heart.remove();
-        }, 12000);
+        setTimeout(() => { if(heart.parentElement) heart.remove(); }, 12000);
     }
 
-    // Генерация изображения (БЕЗ КАВЫЧЕК)
+    // Генерация изображения 900x900
     async function download() {
         const name = recipientInput.value.trim() || "Коллега";
         const msg = gratitudeInput.value.trim();
         if (!msg) return alert("Пожалуйста, напишите текст благодарности!");
 
+        const renderArea = document.getElementById('render-area');
         const renderCard = document.getElementById('renderCard');
         const rTo = document.getElementById('r-to');
         const rMsg = document.getElementById('r-msg');
         
+        // Заполняем данные для рендера
         rTo.innerText = name;
-        // Здесь удалены кавычки
         rMsg.innerText = msg;
         renderCard.style.backgroundImage = `url(${currentBg})`;
 
-        const originalText = downloadBtn.textContent;
         downloadBtn.textContent = "⏳ Создание...";
         downloadBtn.disabled = true;
 
         try {
-            await new Promise(r => setTimeout(r, 100));
+            // Ждем отрисовки шрифтов и фона
+            await new Promise(r => setTimeout(r, 200));
 
-            const canvas = await html2canvas(document.getElementById('render-area'), {
+            const canvas = await html2canvas(renderArea, {
                 width: 900,
                 height: 900,
-                scale: 2, 
+                scale: 1, // Фиксируем масштаб 1:1 для размера 900x900
                 useCORS: true,
                 allowTaint: true,
-                backgroundColor: null
+                backgroundColor: null,
+                windowWidth: 900,
+                windowHeight: 900
             });
 
+            // Конвертация в файл
             const link = document.createElement('a');
             link.download = `TRANSITka_${name}.png`;
-            link.href = canvas.toDataURL("image/png");
+            // Используем максимальное качество PNG
+            link.href = canvas.toDataURL("image/png", 1.0);
             link.click();
         } catch (e) {
-            console.error("Ошибка при создании картинки:", e);
-            alert("Не удалось сохранить изображение. Попробуйте другой браузер.");
+            console.error("Ошибка рендера:", e);
+            alert("Не удалось сохранить изображение.");
         } finally {
-            downloadBtn.textContent = originalText;
+            downloadBtn.textContent = "📥 Скачать ТРАНЗИТку";
             downloadBtn.disabled = false;
         }
     }
 
-    // Слушатели
     recipientInput.addEventListener('input', updatePreview);
     gratitudeInput.addEventListener('input', updatePreview);
     downloadBtn.addEventListener('click', download);
@@ -124,9 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Запуск
     initBackgrounds();
     setInterval(spawnHeart, 800);
 });
-
-
