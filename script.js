@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const link = document.createElement('a');
-            link.download = `TRANSITinka_${name}.png`;
+            link.download = `TRANSITka_${name}.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
         } catch (e) {
@@ -128,4 +128,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initBackgrounds();
     setInterval(spawnHeart, 800);
 });
+
 
