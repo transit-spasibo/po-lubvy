@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updatePreview() {
         const name = recipientInput.value.trim();
         const msg = gratitudeInput.value.trim();
-        outputName.textContent = name || "Коллега";
+        outputName.textContent = name || "Имя";
         // Здесь удалены кавычки
         outputText.textContent = msg ? msg : "Текст вашей признательности";
         charCount.textContent = `${gratitudeInput.value.length}/250`;
@@ -128,3 +128,4 @@ document.addEventListener('DOMContentLoaded', () => {
     initBackgrounds();
     setInterval(spawnHeart, 800);
 });
+
