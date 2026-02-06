@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
         charCount.textContent = `${gratitudeInput.value.length}/250`;
     }
 
-    // Улучшенная анимация: падение сверху, плавность и легкое покачивание
     function spawnHeart(initial = false) {
         const container = document.getElementById('bgHearts');
         if (!container || container.children.length > 35) return; 
@@ -55,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
         heart.innerText = '💙';
         heart.style.left = Math.random() * 95 + 'vw';
         
-        // Медленная длительность: от 10 до 18 секунд
         const duration = (10 + Math.random() * 8);
         heart.style.top = '-10vh';
         heart.style.position = 'absolute';
@@ -66,9 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
         
-        // Анимация с легким поворотом (swing)
         const animName = `fallSlow_${Math.random().toString(36).substr(2, 9)}`;
-        const swingAngle = (Math.random() * 40 - 20); // от -20 до 20 градусов
+        const swingAngle = (Math.random() * 40 - 20); 
         
         const styleSheet = document.createElement('style');
         styleSheet.textContent = `
@@ -112,8 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await new Promise(r => setTimeout(r, 200));
             
-            // scale: 1 гарантирует размер 900x900
-            // backgroundColor: '#ffffff' убирает серый шум
+            // Фикс серого поля: используем масштаб 1, но включаем сглаживание шрифтов
+            // backgroundColor: '#ffffff' критичен для удаления артефактов прозрачности
             const canvas = await html2canvas(renderArea, {
                 width: 900,
                 height: 900,
@@ -121,12 +118,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 logging: false,
+                allowTaint: true,
                 onclone: (clonedDoc) => {
                     const area = clonedDoc.getElementById('render-area');
-                    area.style.position = 'relative';
+                    area.style.position = 'static';
                     area.style.left = '0';
                     area.style.top = '0';
-                    area.style.border = 'none';
+                    area.style.display = 'block';
+                    
+                    // Удаляем тени в клоне, чтобы они не превращались в серые пятна
+                    const plate = area.querySelector('.glass-plate-render');
+                    if (plate) {
+                        plate.style.boxShadow = 'none';
+                        plate.style.border = 'none';
+                    }
                 }
             });
 
