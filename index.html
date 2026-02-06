@@ -10,7 +10,6 @@
 </head>
 <body>
 
-    <!-- Слой для анимированных сердечек -->
     <div class="bg-hearts" id="bgHearts"></div>
 
     <div class="container">
@@ -39,7 +38,7 @@
                 <div class="preview-area">
                     <div id="card-output" class="preview-content">
                         <div id="card-text-content" class="glass-plate">
-                            <div class="preview-to" id="output-name">Коллега</div>
+                            <div class="preview-to" id="output-name">Имя</div>
                             <div class="preview-msg" id="output-text">Текст вашей признательности</div>
                         </div>
                     </div>
@@ -55,10 +54,10 @@
         </section>
     </div>
 
-    <!-- Скрытая область для генерации картинки 900x900 (Исправлено: убраны любые серые поля и рамки) -->
-    <div id="render-area" style="position: fixed; left: -9999px; top: 0; width: 900px; height: 900px; overflow: hidden; background: transparent; padding: 0; margin: 0; border: none !important;">
-        <div id="renderCard" class="render-card" style="width: 900px; height: 900px; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; position: relative; padding: 0; margin: 0; border: none !important;">
-            <div class="glass-plate-render" style="background: rgba(255, 255, 255, 0.96); width: 720px; max-height: 720px; padding: 50px; border-radius: 40px; text-align: center; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 15px 50px rgba(0,0,0,0.15); border: none !important;">
+    <!-- Скрытая область 900x900 с защитой от серых полей -->
+    <div id="render-area" style="position: fixed; left: -9999px; top: 0; width: 900px; height: 900px; overflow: hidden; background: transparent; padding: 0; margin: 0; border: none !important; outline: none !important;">
+        <div id="renderCard" class="render-card" style="width: 900px; height: 900px; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; position: relative; padding: 0; margin: 0; border: none !important; outline: none !important;">
+            <div class="glass-plate-render" style="background: rgba(255, 255, 255, 0.96); width: 720px; max-height: 720px; padding: 50px; border-radius: 40px; text-align: center; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; border: none !important; outline: none !important;">
                 <h2 id="r-to" style="color: #1e3a8a; font-size: 52px; font-weight: 800; margin: 0 0 25px 0; overflow-wrap: break-word; font-family: 'Inter', sans-serif; width: 100%; border: none !important;"></h2>
                 <p id="r-msg" style="color: #1e3a8a; font-size: 34px; font-style: italic; line-height: 1.4; overflow-wrap: break-word; margin: 0; font-family: 'Inter', sans-serif; width: 100%; border: none !important;"></p>
             </div>
