@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         charCount.textContent = `${gratitudeInput.value.length}/250`;
     }
 
+    // Анимация сердец
     function spawnHeart(initial = false) {
         const container = document.getElementById('bgHearts');
         if (!container || container.children.length > 35) return; 
@@ -89,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, duration * 1000);
     }
 
+    // Улучшенная функция скачивания для сохранения качества 900x900
     async function download() {
         const name = recipientInput.value.trim() || "Коллега";
         const msg = gratitudeInput.value.trim();
@@ -107,18 +109,17 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadBtn.disabled = true;
 
         try {
-            await new Promise(r => setTimeout(r, 200));
+            // Задержка для гарантии применения стилей и загрузки фона в DOM
+            await new Promise(r => setTimeout(r, 300));
             
-            // Фикс серого поля: используем масштаб 1, но включаем сглаживание шрифтов
-            // backgroundColor: '#ffffff' критичен для удаления артефактов прозрачности
             const canvas = await html2canvas(renderArea, {
                 width: 900,
                 height: 900,
-                scale: 1, 
+                scale: 3, // Захватываем в 3-кратном разрешении для идеальной четкости
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 logging: false,
-                allowTaint: true,
+                imageTimeout: 0,
                 onclone: (clonedDoc) => {
                     const area = clonedDoc.getElementById('render-area');
                     area.style.position = 'static';
@@ -126,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     area.style.top = '0';
                     area.style.display = 'block';
                     
-                    // Удаляем тени в клоне, чтобы они не превращались в серые пятна
                     const plate = area.querySelector('.glass-plate-render');
                     if (plate) {
                         plate.style.boxShadow = 'none';
@@ -135,9 +135,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
+            // Создаем временный холст для ресайза обратно в 900x900 (если scale > 1)
+            // Это сохранит "плотность" и четкость, но файл будет иметь нужные размеры
+            const finalCanvas = document.createElement('canvas');
+            finalCanvas.width = 900;
+            finalCanvas.height = 900;
+            const ctx = finalCanvas.getContext('2d');
+            
+            // Включаем максимальное сглаживание при масштабировании вниз
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            
+            ctx.drawImage(canvas, 0, 0, 900, 900);
+
             const link = document.createElement('a');
             link.download = `TRANSITka_${name}.png`;
-            link.href = canvas.toDataURL("image/png", 1.0);
+            // Используем максимальное качество JPEG/PNG
+            link.href = finalCanvas.toDataURL("image/png", 1.0);
             link.click();
         } catch (e) {
             console.error(e);
