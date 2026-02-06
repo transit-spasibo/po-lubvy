@@ -40,30 +40,52 @@ document.addEventListener('DOMContentLoaded', () => {
     function updatePreview() {
         const name = recipientInput.value.trim();
         const msg = gratitudeInput.value.trim();
-        outputName.textContent = name || "Имя";
+        outputName.textContent = name || "Коллега";
         outputText.textContent = msg || "Текст вашей признательности";
         charCount.textContent = `${gratitudeInput.value.length}/250`;
     }
 
+    // Обновленная функция: сердца падают сверху вниз без переворота
     function spawnHeart(initial = false) {
         const container = document.getElementById('bgHearts');
-        if (!container || container.children.length > 30) return; 
+        if (!container || container.children.length > 40) return; 
 
         const heart = document.createElement('div');
         heart.className = 'floating-heart';
         heart.innerText = '💙';
         heart.style.left = Math.random() * 95 + 'vw';
         
+        const duration = (6 + Math.random() * 6);
+        heart.style.top = '-5vh';
+        heart.style.transform = 'scale(0.8)';
+        
         if (initial) {
             heart.style.top = Math.random() * 100 + 'vh';
-            heart.style.animationDelay = `-${Math.random() * 10}s`;
         }
 
         heart.style.fontSize = (Math.random() * 20 + 12) + 'px';
-        heart.style.animationDuration = (6 + Math.random() * 6) + 's';
+        
+        // Ключевые кадры: только движение вниз без вращения (rotate)
+        const animName = `fallDown_${Math.random().toString(36).substr(2, 9)}`;
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+            @keyframes ${animName} {
+                0% { transform: translateY(0) scale(0.5); opacity: 0; }
+                10% { opacity: 0.8; }
+                90% { opacity: 0.8; }
+                100% { transform: translateY(110vh) scale(1.2); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+        
+        heart.style.animation = `${animName} ${duration}s linear forwards`;
         
         container.appendChild(heart);
-        setTimeout(() => { if(heart.parentElement) heart.remove(); }, 12000);
+        
+        setTimeout(() => { 
+            if(heart.parentElement) heart.remove(); 
+            styleSheet.remove();
+        }, duration * 1000);
     }
 
     async function download() {
@@ -84,18 +106,31 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadBtn.disabled = true;
 
         try {
-            await new Promise(r => setTimeout(r, 200));
+            await new Promise(r => setTimeout(r, 150));
+            
+            // Захват с принудительным масштабированием и очисткой стилей клона
             const canvas = await html2canvas(renderArea, {
                 width: 900,
                 height: 900,
-                scale: 1,
+                scale: 2, 
                 useCORS: true,
                 backgroundColor: null,
-                windowWidth: 900,
-                windowHeight: 900,
+                removeContainer: true,
                 logging: false,
-                x: 0,
-                y: 0
+                onclone: (clonedDoc) => {
+                    const el = clonedDoc.getElementById('render-area');
+                    if (el) {
+                        el.style.left = '0';
+                        el.style.top = '0';
+                        el.style.border = 'none';
+                        el.style.boxShadow = 'none';
+                        // Убираем возможные фоны, которые могут давать серый оттенок
+                        el.querySelectorAll('*').forEach(child => {
+                            child.style.boxShadow = 'none';
+                            child.style.border = 'none';
+                        });
+                    }
+                }
             });
 
             const link = document.createElement('a');
@@ -122,5 +157,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initBackgrounds();
     for(let i = 0; i < 15; i++) spawnHeart(true);
-    setInterval(() => spawnHeart(false), 800);
+    setInterval(() => spawnHeart(false), 600);
 });
