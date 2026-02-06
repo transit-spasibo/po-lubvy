@@ -40,45 +40,49 @@ document.addEventListener('DOMContentLoaded', () => {
     function updatePreview() {
         const name = recipientInput.value.trim();
         const msg = gratitudeInput.value.trim();
-        outputName.textContent = name || "Коллега";
+        outputName.textContent = name || "Имя";
         outputText.textContent = msg || "Текст вашей признательности";
         charCount.textContent = `${gratitudeInput.value.length}/250`;
     }
 
-    // Обновленная функция: сердца падают сверху вниз без переворота
+    // Улучшенная анимация: падение сверху, плавность и легкое покачивание
     function spawnHeart(initial = false) {
         const container = document.getElementById('bgHearts');
-        if (!container || container.children.length > 40) return; 
+        if (!container || container.children.length > 35) return; 
 
         const heart = document.createElement('div');
         heart.className = 'floating-heart';
         heart.innerText = '💙';
         heart.style.left = Math.random() * 95 + 'vw';
         
-        const duration = (6 + Math.random() * 6);
-        heart.style.top = '-5vh';
-        heart.style.transform = 'scale(0.8)';
+        // Медленная длительность: от 10 до 18 секунд
+        const duration = (10 + Math.random() * 8);
+        heart.style.top = '-10vh';
+        heart.style.position = 'absolute';
         
         if (initial) {
             heart.style.top = Math.random() * 100 + 'vh';
         }
 
-        heart.style.fontSize = (Math.random() * 20 + 12) + 'px';
+        heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
         
-        // Ключевые кадры: только движение вниз без вращения (rotate)
-        const animName = `fallDown_${Math.random().toString(36).substr(2, 9)}`;
+        // Анимация с легким поворотом (swing)
+        const animName = `fallSlow_${Math.random().toString(36).substr(2, 9)}`;
+        const swingAngle = (Math.random() * 40 - 20); // от -20 до 20 градусов
+        
         const styleSheet = document.createElement('style');
         styleSheet.textContent = `
             @keyframes ${animName} {
-                0% { transform: translateY(0) scale(0.5); opacity: 0; }
-                10% { opacity: 0.8; }
-                90% { opacity: 0.8; }
-                100% { transform: translateY(110vh) scale(1.2); opacity: 0; }
+                0% { transform: translateY(0) rotate(0deg) scale(0.6); opacity: 0; }
+                15% { opacity: 0.7; }
+                50% { transform: translateY(50vh) rotate(${swingAngle}deg) scale(1); }
+                85% { opacity: 0.7; }
+                100% { transform: translateY(115vh) rotate(0deg) scale(0.8); opacity: 0; }
             }
         `;
         document.head.appendChild(styleSheet);
         
-        heart.style.animation = `${animName} ${duration}s linear forwards`;
+        heart.style.animation = `${animName} ${duration}s ease-in forwards`;
         
         container.appendChild(heart);
         
@@ -102,34 +106,27 @@ document.addEventListener('DOMContentLoaded', () => {
         rMsg.innerText = msg;
         renderCard.style.backgroundImage = `url(${currentBg})`;
 
-        downloadBtn.textContent = "⏳ Создание...";
+        downloadBtn.textContent = "⏳ Сохранение...";
         downloadBtn.disabled = true;
 
         try {
-            await new Promise(r => setTimeout(r, 150));
+            await new Promise(r => setTimeout(r, 200));
             
-            // Захват с принудительным масштабированием и очисткой стилей клона
+            // scale: 1 гарантирует размер 900x900
+            // backgroundColor: '#ffffff' убирает серый шум
             const canvas = await html2canvas(renderArea, {
                 width: 900,
                 height: 900,
-                scale: 2, 
+                scale: 1, 
                 useCORS: true,
-                backgroundColor: null,
-                removeContainer: true,
+                backgroundColor: '#ffffff',
                 logging: false,
                 onclone: (clonedDoc) => {
-                    const el = clonedDoc.getElementById('render-area');
-                    if (el) {
-                        el.style.left = '0';
-                        el.style.top = '0';
-                        el.style.border = 'none';
-                        el.style.boxShadow = 'none';
-                        // Убираем возможные фоны, которые могут давать серый оттенок
-                        el.querySelectorAll('*').forEach(child => {
-                            child.style.boxShadow = 'none';
-                            child.style.border = 'none';
-                        });
-                    }
+                    const area = clonedDoc.getElementById('render-area');
+                    area.style.position = 'relative';
+                    area.style.left = '0';
+                    area.style.top = '0';
+                    area.style.border = 'none';
                 }
             });
 
@@ -156,6 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     initBackgrounds();
-    for(let i = 0; i < 15; i++) spawnHeart(true);
-    setInterval(() => spawnHeart(false), 600);
+    for(let i = 0; i < 20; i++) spawnHeart(true);
+    setInterval(() => spawnHeart(false), 1200); 
 });
