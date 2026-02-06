@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'bg2', url: 'bg2.png' },
         { id: 'bg3', url: 'bg3.png' },
         { id: 'bg4', url: 'bg4.png' },
-        { id: 'bg5', url: 'bg5.png' },
         { id: 'bg6', url: 'bg6.png' }
     ];
 
@@ -139,3 +138,4 @@ document.addEventListener('DOMContentLoaded', () => {
     initBackgrounds();
     setInterval(spawnHeart, 800);
 });
+
